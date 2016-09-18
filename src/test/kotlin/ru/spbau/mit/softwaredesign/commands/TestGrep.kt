@@ -61,7 +61,7 @@ class TestGrep {
 
     @Test
     fun testCase() {
-        val out = grep.execute(listOf("-i", "pAtTeRn"), mock<Environment>(), "pattern\nPATTERN\npAtTeRn".byteInputStream())
+        val out = grep.execute(listOf("pAtTeRn"), mock<Environment>(), "pattern\nPATTERN\npAtTeRn".byteInputStream())
         assertEquals(listOf("pAtTeRn"), IOUtils.readLines(out, "UTF-8"))
     }
 
