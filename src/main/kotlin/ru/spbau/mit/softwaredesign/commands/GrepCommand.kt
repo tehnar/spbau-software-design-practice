@@ -13,6 +13,14 @@ import java.nio.file.Paths
  * Created by Сева on 18.09.2016.
  */
 
+/**
+ * Command that searches in files for provided pattern and prints found matching lines to its output
+ * It supports three options: -i (for case insensitivity), -w (for matching only whole words) and
+ * -A n (for printing n extra lines after each match)
+ *
+ * Argument for this command should have following format: 	&#91;options] pattern &#91;file...]
+ * If there are no files provided that matching is applied to command input
+ */
 class GrepCommand: Command {
     private val options = Options()
     private val parser = DefaultParser()
