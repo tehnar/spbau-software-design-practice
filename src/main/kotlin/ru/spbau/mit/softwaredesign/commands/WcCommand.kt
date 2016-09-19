@@ -9,6 +9,11 @@ import java.nio.file.Paths
  * Created by Сева on 13.09.2016.
  */
 
+/**
+ * Command that calculates number of lines, words and bytes in given files and prints these values to its output
+ * If args are not empty that each argument is interpreted as a path to a file
+ * Otherwise, command's input will be taken as file input
+ */
 class WcCommand: Command {
     override fun execute(args: List<String>, env: Environment, stdin: InputStream): InputStream {
         var wordCount = WordCount()

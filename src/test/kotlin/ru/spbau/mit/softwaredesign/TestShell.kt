@@ -5,6 +5,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import org.apache.commons.io.IOUtils
 import org.junit.Test
 import ru.spbau.mit.softwaredesign.commands.Command
+import ru.spbau.mit.softwaredesign.commands.ExternalCommand
 import kotlin.test.assertEquals
 
 /**
@@ -48,5 +49,17 @@ class TestShell {
         whenever(wc.execute(wcStatement.args, env, catStream)).thenReturn(wcStream)
 
         assertEquals(wcStream, shell.executeLine(line))
+    }
+
+    @Test
+    fun testExternalCall() {
+        val external = mock<Command>()
+        val line = "test command"
+        shell.registerCommand(ExternalCommand.name, external)
+        whenever(parser.splitLineToStatements(line, env)).thenReturn(listOf(CommandStatement("test", listOf("command"))))
+        val out = "".byteInputStream()
+        whenever(external.execute(listOf("test", "command"), env, System.`in`)).thenReturn(out)
+
+        assertEquals(out, shell.executeLine(line))
     }
 }
