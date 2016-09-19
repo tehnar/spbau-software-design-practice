@@ -1,17 +1,20 @@
 package ru.spbau.mit.softwaredesign.commands
 
 import org.apache.commons.io.IOUtils
-import ru.spbau.mit.softwaredesign.commands.Command
 import ru.spbau.mit.softwaredesign.Environment
-import java.io.File
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 
 /**
  * Created by Сева on 07.09.2016.
  */
 
+/**
+ * Executes external command
+ * Its name is the first argument and other arguments are passed to an external command
+ * Command takes stdin as its input
+ * Returns output of executed command
+ */
 class ExternalCommand: Command {
     override fun execute(args: List<String>, env: Environment, stdin: InputStream): InputStream {
         val processBuilder = ProcessBuilder(args)

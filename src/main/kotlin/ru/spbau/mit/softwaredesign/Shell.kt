@@ -11,6 +11,11 @@ import java.util.*
  * Created by Сева on 07.09.2016.
  */
 
+/**
+ * Provides an interface for execution of shell commands
+ * All the commands except for AssignmentCommand and ExternalCommand should be registered to be recognized
+ * Any unregistered command is interpreted as external
+ */
 class Shell {
     private val environment: Environment
     private val systemCommands: MutableMap<String, Command> = HashMap()
@@ -23,10 +28,22 @@ class Shell {
         registerCommand(ExternalCommand.name, ExternalCommand())
     }
 
+    /**
+     * Maps provided name to a particular command.
+     */
     fun registerCommand(name: String, command: Command) {
         systemCommands[name] = command
     }
 
+    /**
+     * Interprets line as a command (or as a pipe of commands), executes them sequentially
+     * and returns output of the last command
+     * All the commands used in line should be registered before execution.
+     * Any unregistered command is interpreted as external
+     *
+     * @param line Line to execute
+     * @return InputStream of output of the last command in pipe
+     */
     fun executeLine(line: String): InputStream {
         val emptyOut = "".byteInputStream()
 
@@ -42,14 +59,16 @@ class Shell {
 
         var stdin = System.`in`
         for (command in commands) {
+            var args = command.args
             val commandToExecute = if (command.name == "=") {
                 systemCommands[AssignmentCommand.name]!!
             } else if (command.name in systemCommands) {
                 systemCommands[command.name]!!
             } else {
+                args = listOf(command.name) + args
                 systemCommands[ExternalCommand.name]!!
             }
-            stdin = commandToExecute.execute(command.args, environment, stdin)
+            stdin = commandToExecute.execute(args, environment, stdin)
         }
 
         return stdin
