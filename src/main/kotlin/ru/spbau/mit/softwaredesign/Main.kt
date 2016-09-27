@@ -14,6 +14,7 @@ fun main(args: Array<String>) {
     shell.registerCommand("pwd", PwdCommand())
     shell.registerCommand("wc", WcCommand())
     shell.registerCommand("cat", CatCommand())
+    shell.registerCommand("grep", GrepCommand())
 
     while (true) {
         print("$")
