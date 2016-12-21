@@ -1,3 +1,7 @@
+# hw 4 Activity/usecase diagram
+[Presentation](https://docs.google.com/presentation/d/1p3StHK6FrnOKg56td6CClIBD3P5TOp1_yNfQYAQ7Bcc/edit#slide=id.g13378576af_0_68)
+
+# hw 1-2 CLI
 `Parser` разбивает строку на набор команд, разделенных пайпом.
 Команда - ее имя и список аргументов.
 
