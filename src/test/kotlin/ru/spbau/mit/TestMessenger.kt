@@ -23,7 +23,11 @@ class TestMessenger {
     @Test
     fun testMessageSending() {
         val messenger = Messenger(server, client, MessengerOptions(NICK, PORT))
-        val messages = listOf(Message(NICK, "Hi"), Message(NICK, "Hello"), Message(NICK, "Bye"))
+        val messages = listOf(
+                Message(Message.MessageType.TEXT_MESSAGE, NICK, "Hi"),
+                Message(Message.MessageType.TEXT_MESSAGE, NICK, "Hello"),
+                Message(Message.MessageType.TEXT_MESSAGE, NICK, "Bye")
+        )
         val connection = ConnectionDummy(mutableListOf())
 
         whenever(client.connectTo(IP, PORT)).thenReturn(connection)
@@ -45,7 +49,11 @@ class TestMessenger {
     @Test
     fun testMessageReceiving() {
         val messenger = Messenger(server, client, MessengerOptions(NICK, PORT))
-        val messages = listOf(Message("Other", "Hi"), Message("Other", "Hello"), Message("Other", "Bye"))
+        val messages = listOf(
+                Message(Message.MessageType.TEXT_MESSAGE, "Other", "Hi"),
+                Message(Message.MessageType.TEXT_MESSAGE, "Other", "Hello"),
+                Message(Message.MessageType.TEXT_MESSAGE, "Other", "Bye")
+        )
         val connection = ConnectionDummy(messages.toMutableList())
 
         whenever(client.connectTo(IP, PORT)).thenReturn(connection)
@@ -129,7 +137,7 @@ class TestMessenger {
                 })
             }
         }
-
+        
         override fun disconnect() {
             synchronized(this, {
                 alive = false

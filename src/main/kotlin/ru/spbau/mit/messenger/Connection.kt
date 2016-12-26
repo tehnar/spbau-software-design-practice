@@ -26,4 +26,5 @@ interface Connection {
      * Returns if connection is still alive
      */
     fun isAlive(): Boolean
+
 }

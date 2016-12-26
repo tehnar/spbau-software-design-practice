@@ -21,10 +21,16 @@ class ConnectionImpl(private val socket: Socket): Connection {
     }
 
     override fun getMessage(): Message {
+        val type = input.readInt()
         val userName = input.readUTF()
         val text = input.readUTF()
-        return Message(userName, text)
+        if (type !in Message.MessageType.values().indices) {
+            throw IllegalArgumentException("Unknown type $type of message")
+        }
+
+        return Message(Message.MessageType.values()[type], userName, text)
     }
+
 
     override fun disconnect() = socket.close()
 

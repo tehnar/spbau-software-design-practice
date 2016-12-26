@@ -31,7 +31,7 @@ class Messenger constructor(private val server: Server, private val client: Clie
 
     fun sendMessage(message: String) {
         try {
-            connection.sendMessage(Message(options.userName, message))
+            connection.sendMessage(Message(Message.MessageType.TEXT_MESSAGE, options.userName, message))
         } catch (e: Exception) {
             onError("Failed to send message")
             LOG.error("Failed to send message", e)
@@ -118,7 +118,7 @@ class Messenger constructor(private val server: Server, private val client: Clie
         while (connection.isAlive()) {
             try {
                 onMessageReceived(connection.getMessage())
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 onSystemMessage("Connection lost")
                 LOG.warn("Error while reading message: ", e)
                 break
