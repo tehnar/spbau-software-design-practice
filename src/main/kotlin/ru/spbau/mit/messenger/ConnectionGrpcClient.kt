@@ -17,27 +17,14 @@ class ConnectionGrpcClient(private val channel: ManagedChannel) : Connection, Ch
     private var observer: StreamObserver<MessageProto>? = null
 
     init {
+        val connectionStub = ChatGrpc.newBlockingStub(channel)
+        val result = connectionStub.processConnect(Void.getDefaultInstance())
+        if (!result.result) {
+            throw IOException("Connection rejected by server")
+        }
+
         chatStub = ChatGrpc.newStub(channel)
-        chatStub.processConnect(Void.getDefaultInstance(), object: StreamObserver<ConnectionResult> {
-            var result = true
-
-            override fun onNext(result: ConnectionResult) {
-                this.result = result.result
-            }
-
-            override fun onCompleted() {
-                if (result) {
-                    startChat()
-                } else {
-                    throw IOException("Server rejected connection")
-                }
-            }
-
-            override fun onError(t: Throwable) {
-                LOG.warn(t)
-            }
-
-        })
+        startChat()
     }
 
     override fun sendMessage(message: Message) {
@@ -46,7 +33,9 @@ class ConnectionGrpcClient(private val channel: ManagedChannel) : Connection, Ch
                 .setNickName(message.userName)
                 .setText(message.text)
                 .build()
-        observer?.onNext(messageProto) ?: throw IllegalStateException("Not connected")
+        synchronized(this) {
+            observer?.onNext(messageProto) ?: throw IllegalStateException("Not connected")
+        }
     }
 
     override fun getMessage(): Message {

@@ -38,6 +38,8 @@ class Messenger constructor(private val server: Server, private val client: Clie
         }
     }
 
+    fun isConnectionAlive() = connection.isAlive()
+
     fun connectTo(ip: String, port: Int) {
         if (connection.isAlive()) {
             onSystemMessage("Connection to $ip:$port aborted: there is an active connection already")
@@ -66,6 +68,14 @@ class Messenger constructor(private val server: Server, private val client: Clie
         processMessagesThread.join()
     }
 
+
+    fun sendTypingStatus(typing: Boolean) {
+        if (typing) {
+            connection.sendMessage(Message(Message.MessageType.START_WRITING, options.userName, ""))
+        } else {
+            connection.sendMessage(Message(Message.MessageType.STOP_WRITING, options.userName, ""))
+        }
+    }
 
     fun changeOptions(newOptions: MessengerOptions) {
         if (options.userName != newOptions.userName) {

@@ -5,18 +5,27 @@ import ru.spbau.mit.messenger.Messenger
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import javax.swing.*
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 
 class ChatView(size: Dimension, private val messenger: Messenger): JFrame("Chat") {
     private val chatArea = JTextPane()
+    private val typingStatus = JLabel()
+
     private val messageField = JTextField()
     private val sendButton = JButton("Send")
+
     private val nickNameStyle = SimpleAttributeSet()
     private val messageStyle = SimpleAttributeSet()
     private val systemMessageStyle = SimpleAttributeSet()
     private val errorMessageStyle = SimpleAttributeSet()
+
+    private val typingTimer: Timer
+    private var lastTypingTime: Long = System.currentTimeMillis()
+    private val TYPING_THRESHOLD = 1000
 
     init {
         this.size = size
@@ -25,6 +34,17 @@ class ChatView(size: Dimension, private val messenger: Messenger): JFrame("Chat"
         initMessageArea()
         initCallbacks()
         initStyles()
+        typingTimer = Timer(TYPING_THRESHOLD) {
+            if (!messenger.isConnectionAlive()) {
+                return@Timer
+            }
+            if (lastTypingTime + TYPING_THRESHOLD > System.currentTimeMillis()) {
+                messenger.sendTypingStatus(true)
+            } else {
+                messenger.sendTypingStatus(false)
+            }
+        }
+        typingTimer.start()
     }
 
     private fun initMenu() {
@@ -59,9 +79,16 @@ class ChatView(size: Dimension, private val messenger: Messenger): JFrame("Chat"
     }
 
     private fun initMessageArea() {
-        JPanel().let {
+        val messagePanel = JPanel().let {
             it.add(messageField)
             it.add(sendButton)
+            return@let it
+        }
+        typingStatus.horizontalAlignment = SwingConstants.LEFT
+        JPanel().let {
+            it.layout = BoxLayout(it, BoxLayout.Y_AXIS)
+            it.add(typingStatus)
+            it.add(messagePanel)
             add(it, BorderLayout.SOUTH)
         }
 
@@ -70,6 +97,29 @@ class ChatView(size: Dimension, private val messenger: Messenger): JFrame("Chat"
             addMessage(Message(Message.MessageType.TEXT_MESSAGE, "You", messageField.text))
             messageField.text = ""
         }
+
+        messageField.addKeyListener(object: KeyListener {
+            override fun keyTyped(p0: KeyEvent?) {
+                lastTypingTime = System.currentTimeMillis()
+                if (!typingTimer.isRunning) {
+                    typingTimer.restart()
+                }
+            }
+
+            override fun keyPressed(p0: KeyEvent?) {
+                lastTypingTime = System.currentTimeMillis()
+                if (!typingTimer.isRunning) {
+                    typingTimer.restart()
+                }
+            }
+
+            override fun keyReleased(p0: KeyEvent?) {
+                lastTypingTime = System.currentTimeMillis()
+                if (!typingTimer.isRunning) {
+                    typingTimer.restart()
+                }
+            }
+        })
 
         messageField.preferredSize = Dimension(size.width - 150, 25)
         sendButton.preferredSize = Dimension(100, 25)
@@ -120,8 +170,18 @@ class ChatView(size: Dimension, private val messenger: Messenger): JFrame("Chat"
     private fun addMessage(message: Message) {
         SwingUtilities.invokeLater {
             chatArea.styledDocument.let {
-                it.insertString(it.length, message.userName + ": ", nickNameStyle)
-                it.insertString(it.length, message.text + "\n", messageStyle)
+                when (message.type) {
+                    Message.MessageType.TEXT_MESSAGE -> {
+                        it.insertString(it.length, message.userName + ": ", nickNameStyle)
+                        it.insertString(it.length, message.text + "\n", messageStyle)
+                    }
+                    Message.MessageType.START_WRITING -> {
+                        typingStatus.text = "${message.userName} is typing..."
+                    }
+                    Message.MessageType.STOP_WRITING -> {
+                        typingStatus.text = ""
+                    }
+                }
             }
         }
     }
