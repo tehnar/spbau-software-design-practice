@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "ru.spbau.mit.messenger";
+option java_outer_classname = "MessengerProto";
+
+service Chat {
+  rpc processConnect (Void) returns (ConnectionResult) {}
+  rpc chat (stream MessageProto) returns (stream MessageProto) {}
+}
+
+// The request message containing the user's name.
+message MessageProto {
+  int32 type = 1;
+  string nickName = 2;
+  string text = 3;
+}
+
+message Void {
+}
+
+message ConnectionResult {
+  bool result = 1;
+}

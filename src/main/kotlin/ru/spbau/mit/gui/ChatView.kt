@@ -67,7 +67,7 @@ class ChatView(size: Dimension, private val messenger: Messenger): JFrame("Chat"
 
         messageField.addActionListener {
             messenger.sendMessage(messageField.text)
-            addMessage(Message("You", messageField.text))
+            addMessage(Message(Message.MessageType.TEXT_MESSAGE, "You", messageField.text))
             messageField.text = ""
         }
 
