@@ -4,6 +4,9 @@ import ru.spbau.mit.model.Position
 import ru.spbau.mit.model.creature.Creature
 import ru.spbau.mit.model.world.World
 
+/**
+ * Creature me wants to move to position to. If this position is occupied, then me attacks creature on it
+ */
 class MoveAction(val me: Creature, val to: Position): Action {
     override fun applyAction(world: World): ActionResult? {
         if (me.position == to) {

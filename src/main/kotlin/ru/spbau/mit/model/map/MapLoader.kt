@@ -5,6 +5,9 @@ import ru.spbau.mit.model.tile.Tile
 import ru.spbau.mit.model.tile.WallTile
 import java.io.File
 
+/**
+ * Utility class that loads pregenerated map from disk
+ */
 class MapLoader {
     fun load(file: File): GameMap {
         val lines = file.readLines()

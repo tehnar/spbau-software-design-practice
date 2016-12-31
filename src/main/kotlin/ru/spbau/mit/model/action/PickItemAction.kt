@@ -5,6 +5,9 @@ import ru.spbau.mit.model.creature.Creature
 import ru.spbau.mit.model.item.Item
 import ru.spbau.mit.model.world.World
 
+/**
+ * Creature me wants to pick up item from floor
+ */
 class PickItemAction(val me: Creature, val item: Item): Action {
     override fun applyAction(world: World): ActionResult? {
         if (!world.itemsAt(me.position).contains(item)) {

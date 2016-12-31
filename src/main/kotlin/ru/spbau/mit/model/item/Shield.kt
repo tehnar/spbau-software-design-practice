@@ -5,6 +5,10 @@ import ru.spbau.mit.model.action.ActionResult
 import ru.spbau.mit.model.creature.Creature
 import ru.spbau.mit.view.View
 
+/**
+ * Modifies creature's shield stat by given value while put on
+ */
+
 class Shield(val shield: Int) : Item {
     override val usable = false
     override val wearable = true

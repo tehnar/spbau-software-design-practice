@@ -5,6 +5,10 @@ import ru.spbau.mit.model.action.ActionResult
 import ru.spbau.mit.model.creature.Creature
 import ru.spbau.mit.view.View
 
+/**
+ * Modifies creature's damage stat by given value while put on
+ */
+
 class ShortSword(val damage: Int) : Item {
     override val usable = false
     override val wearable = true

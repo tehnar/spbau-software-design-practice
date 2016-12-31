@@ -7,6 +7,9 @@ import ru.spbau.mit.model.creature.Creature
 import ru.spbau.mit.model.world.World
 import java.util.*
 
+/**
+ * Makes random move if can not attack player, attacks him otherwise
+ */
 class RandomWalkStrategy: Strategy {
     private val random = Random()
 

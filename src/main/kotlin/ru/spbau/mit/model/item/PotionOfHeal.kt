@@ -5,6 +5,9 @@ import ru.spbau.mit.model.action.ActionResult
 import ru.spbau.mit.model.creature.Creature
 import ru.spbau.mit.view.View
 
+/**
+ * Usable item that heals hpToHeal hp when used
+ */
 class PotionOfHeal(private val hpToHeal: Int): Item {
     override val usable = true
     override val wearable = false

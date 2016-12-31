@@ -3,6 +3,9 @@ package ru.spbau.mit.model.tile
 import ru.spbau.mit.model.Position
 import ru.spbau.mit.view.View
 
+/**
+ * Passable floor
+ */
 class FloorTile: Tile {
     override val passable = true
     override val name = "floor"
